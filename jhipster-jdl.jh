@@ -1,0 +1,25 @@
+entity Blog {
+    name String required,
+    handle String required
+}
+
+entity Tag {
+    name String required
+}
+
+entity Entry {
+    title String required,
+    content String required,
+    date LocalDate required
+}
+
+relationship ManyToOne {
+    Blog{user(login)} to User,
+    Entry{blog(name)} to Blog
+}
+
+relationship ManyToMany {
+    Entry{tag(name)} to Tag{entry}
+}
+
+paginate Entry, Tag with infinite-scroll
