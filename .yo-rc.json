@@ -1,0 +1,33 @@
+{
+    "generator-jhipster": {
+        "promptValues": {
+            "packageName": "com.arjuna.projteste"
+        },
+        "jhipsterVersion": "5.7.1",
+        "applicationType": "monolith",
+        "baseName": "projteste",
+        "packageName": "com.arjuna.projteste",
+        "packageFolder": "com/arjuna/projteste",
+        "serverPort": "8080",
+        "authenticationType": "jwt",
+        "cacheProvider": "ehcache",
+        "enableHibernateCache": true,
+        "websocket": false,
+        "databaseType": "sql",
+        "devDatabaseType": "mysql",
+        "prodDatabaseType": "mysql",
+        "searchEngine": false,
+        "messageBroker": false,
+        "serviceDiscoveryType": "eureka",
+        "buildTool": "maven",
+        "enableSwaggerCodegen": false,
+        "jwtSecretKey": "ZTI1ZTQxOGViMjhhOTYyYzllMzRiMTUzZDYyOGMzMjQ5MWFiZTAwZGJhYTczYzZkODlkY2I1MDA0YzAyOWZlNTMwMTQ5NGVlMmYxMTU3YzFhZDJhYjI4M2IwOGQ2M2EyZWM5NGM3ZTYzZjVkNDZmNTA1ODI4ZTA4YTczNjFmOTg=",
+        "clientFramework": "angularX",
+        "useSass": false,
+        "clientPackageManager": "npm",
+        "testFrameworks": [],
+        "jhiPrefix": "jhi",
+        "otherModules": [],
+        "enableTranslation": false
+    }
+}
