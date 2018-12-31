@@ -3,11 +3,17 @@ package com.arjuna.projteste.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.arjuna.projteste.domain.Blog;
 import com.arjuna.projteste.repository.BlogRepository;
+import com.arjuna.projteste.security.SecurityUtils;
 import com.arjuna.projteste.web.rest.errors.BadRequestAlertException;
 import com.arjuna.projteste.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +29,7 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
-public class BlogResource {
+public class BlogResource implements MessageSourceAware {
 
     private final Logger log = LoggerFactory.getLogger(BlogResource.class);
 
@@ -31,9 +37,15 @@ public class BlogResource {
 
     private final BlogRepository blogRepository;
 
+    private MessageSource messageSource;
+
     public BlogResource(BlogRepository blogRepository) {
         this.blogRepository = blogRepository;
     }
+
+    public void setMessageSource(MessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
 
     /**
      * POST  /blogs : Create a new blog.
@@ -97,9 +109,13 @@ public class BlogResource {
      */
     @GetMapping("/blogs/{id}")
     @Timed
-    public ResponseEntity<Blog> getBlog(@PathVariable Long id) {
+    public ResponseEntity<?> getBlog(@PathVariable Long id) {
         log.debug("REST request to get Blog : {}", id);
         Optional<Blog> blog = blogRepository.findById(id);
+        if(blog.isPresent() && blog.get().getUser() != null &&
+                !blog.get().getUser().getLogin().equals(SecurityUtils.getCurrentUserLogin().orElse("")))
+            return new ResponseEntity<>(messageSource.getMessage("error.http.403", null, 
+                LocaleContextHolder.getLocale()), HttpStatus.FORBIDDEN);
         return ResponseUtil.wrapOrNotFound(blog);
     }
 

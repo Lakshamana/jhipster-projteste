@@ -3,16 +3,18 @@ package com.arjuna.projteste.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.arjuna.projteste.domain.Entry;
 import com.arjuna.projteste.repository.EntryRepository;
+import com.arjuna.projteste.security.SecurityUtils;
 import com.arjuna.projteste.web.rest.errors.BadRequestAlertException;
 import com.arjuna.projteste.web.rest.util.HeaderUtil;
 import com.arjuna.projteste.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -93,12 +95,8 @@ public class EntryResource {
     @Timed
     public ResponseEntity<List<Entry>> getAllEntries(Pageable pageable, @RequestParam(required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get a page of Entries");
-        Page<Entry> page;
-        if (eagerload) {
-            page = entryRepository.findAllWithEagerRelationships(pageable);
-        } else {
-            page = entryRepository.findAll(pageable);
-        }
+        Page<Entry> page = entryRepository.findByBlogUserLoginOrderByDateDesc(
+            SecurityUtils.getCurrentUserLogin().orElse(null), pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, String.format("/api/entries?eagerload=%b", eagerload));
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
